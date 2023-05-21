@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Create New Account</title>
+  <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js/dist/web3.min.js"></script>
+  <style>
+    body {
+      font-family: sans-serif;
+      font-size: 14px;
+      background-color: #f7f8fa;
+      color: #242a31;
+    }
+    h1 {
+      font-size: 32px;
+      margin-top: 40px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    form {
+      background-color: #fff;
+      border: 1px solid #dce0e2;
+      border-radius: 4px;
+      box-shadow: 0 2px 4px rgba(36, 42, 49, 0.15);
+      margin: 0 auto;
+      padding: 30px;
+      max-width: 500px;
+    }
+    label {
+      display: block;
+      margin-bottom: 10px;
+    }
+    input[type="text"], input[type="password"] {
+      width: 100%;
+      padding: 10px;
+      font-size: 14px;
+      border: 1px solid #dce0e2;
+      border-radius: 4px;
+      box-sizing: border-box;
+      margin-bottom: 20px;
+    }
+    button[type="submit"] {
+      background-color: #4c54b7;
+      color: #fff;
+      font-size: 16px;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button[type="submit"]:hover {
+      background-color: #2f338d;
+    }
+  </style>
+</head>
+<body>
+    <a href="index.html">
+        <h1 style="font-size: 24px;">Send Transaction</h1>
+      </a>
+      <a href="ownership.html">
+        <h1 style="font-size: 24px;">Manage Ownership</h1>
+      </a>
+  
+  <h1>Create New Account </h1>
+  <form id="create-form">
+    <label for="node-input">Username:</label>
+    <input type="text" id="node-input" name="node-input">
+    <label for="password-input">Password:</label>
+    <input type="password" id="password-input" name="password">
+    <button type="submit" id="create-btn">Create Account</button>
+    
+  <!-- </form>
+  <h1>Create New Ethereum Account - SideChain</h1>
+  <form id="create-form2">
+    <label for="node-input">Node:</label>
+    <input type="text" id="node-input2" name="node-input">
+    <label for="password-input">Password:</label>
+    <input type="password" id="password-input2" name="password">
+    <button type="submit" id="create-btn">Create Account</button>
+  </form> -->
+
+  <script>
+    // Initialize Web3
+    const web3 = new Web3(Web3.givenProvider || "http://localhost:8545");
+
+    // Backend function to create new account
+   async function createAccount( node,password) 
+   {
+        const obj={password:password,username:node}
+        console.log(JSON.stringify(obj));
+        const res = await fetch(`http://127.0.0.1:5000/api/registerUser`, {
+        method: 'POST',
+        body : JSON.stringify(obj),
+        headers: { 'Content-Type': 'application/json' },
+        });
+        console.log(res)
+        return res
+    }
+
+    async function createAccount2(node,password) 
+    {
+          const obj={password:password,Node:node}
+          console.log(JSON.stringify(obj));
+          const res = await fetch(`http://127.0.0.1:5000/api/createAccountSideChain`, {
+          method: 'POST',
+          body : JSON.stringify(obj),
+          headers: { 'Content-Type': 'application/json' },
+          });
+          console.log(res)
+          return res
+      }
+
+
+
+    // Handle form submit
+    const form = document.getElementById("create-form");
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const password = document.getElementById("password-input").value;
+      const node = document.getElementById("node-input").value;
+      const address = await createAccount( node,password);
+      alert(`New account created with address: ${address}`);
+    });
+    const form2 = document.getElementById("create-form2");
+    form2.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const password = document.getElementById("password-input2").value;
+      const node = document.getElementById("node-input2").value;
+      const address = await createAccount2( node,password);
+      alert(`New account created with address: ${address}`);
+    });
+
+  </script>
+</body>
+</html>

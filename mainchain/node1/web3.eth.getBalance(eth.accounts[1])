@@ -1,0 +1,9 @@
+web3.eth.getBalance(eth.accounts[1])
+
+eth.sendTransaction({
+    to: "0xb1a431dfc4d18cf7cc1d5d874d89511d2ac9f311", 
+    from: "0x8dfaa0e599e70bc1d4ca3ce591bafe58d5f83b72", 
+    value: web3.toWei("0.5", "ether")
+    })
+
+    web3.eth.getTransactionReceipt("0x0cdc41ed28ed97c68edd0e9a1a457384d42c79d0cd994591f5f742e91735896d")

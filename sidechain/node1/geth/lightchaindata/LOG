@@ -1,0 +1,8 @@
+=============== Apr 15, 2023 (IST) ===============
+01:51:46.680267 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+01:51:46.692309 db@open opening
+01:51:46.692468 version@stat F·[] S·0B[] Sc·[]
+01:51:46.700439 db@janitor F·2 G·0
+01:51:46.700452 db@open done T·8.130708ms
+01:51:46.738506 db@close closing
+01:51:46.738593 db@close done T·86.292µs

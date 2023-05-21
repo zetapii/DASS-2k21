@@ -1,0 +1,94 @@
+<div style="text-align: center;">
+    <h1 style="font-size: 36px;">Blockchain Ownership Management</h1>
+    <a href="index.html">
+        <h1 style="font-size: 24px;">Send Transaction</h1>
+      </a>
+    
+
+  </div>
+  
+  <div style="display: flex; justify-content: center;">
+    
+    <div style="margin-right: 50px;">
+      <h2 style="font-size: 24px;">Node 1</h2>
+      <table id="node1-table" style="border-collapse: collapse; width: 100%;">
+        <thead>
+          <tr style="border-bottom: 1px solid black;">
+            <th style="padding: 10px;">Username</th>
+            <th style="padding: 10px;">Ownership Status</th>
+            <th style="padding: 10px;">Change Ownership</th>
+          </tr>
+        </thead>
+        <tbody>
+        </tbody>
+      </table>
+    </div>
+  
+  </div>
+  <script>
+    // Fetch accounts and ownership status for Node 1
+    async function flipOwnership(e)
+    {
+        fetch('http://127.0.0.1:5000/api/flip_ownership', {
+            method: 'POST',
+        body : JSON.stringify({Node:1,username:e}),
+        headers: { 'Content-Type': 'application/json' },
+        }).then(response=>window.location.reload());
+    }
+    async function flipOwnership_(e)
+    {
+        fetch('http://127.0.0.1:5000/api/flip_ownership', {
+            method: 'POST',
+        body : JSON.stringify({Node:2,address:e}),
+        headers: { 'Content-Type': 'application/json' },
+        }).then(response=>window.location.reload());
+    }
+    function load()
+    {
+    fetch('http://127.0.0.1:5000/api/getAccountsOwnership', {
+        method: 'POST',
+        body : JSON.stringify({Node:1}),
+        headers: { 'Content-Type': 'application/json' },
+        })
+      .then(response => response.json())
+      .then(data => {
+        const node1TableBody = document.querySelector('#node1-table tbody');
+        data.forEach(account => {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td style="padding: 10px;">${account.username}</td>
+            <td style="padding: 10px;">${account.funded ? 'Funded' : 'Not Funded'}</td>
+            <td style="padding: 10px;">
+      <button style="padding: 5px 10px; border-radius: 5px; font-size: 16px;" onclick="flipOwnership('${account.username}')">Flip Ownership</button>
+    </td>
+          `;
+          node1TableBody.appendChild(row);
+        });
+      })
+      .catch(error => console.error(error));
+  
+    // Fetch accounts and ownership status for Node 2
+    fetch('http://127.0.0.1:5000/api/getAccountsOwnership', {
+        method: 'POST',
+        body : JSON.stringify({Node:2}),
+        headers: { 'Content-Type': 'application/json' },
+        })
+      .then(response => response.json())
+      .then(data => {
+        const node2TableBody = document.querySelector('#node2-table tbody');
+        data.forEach(account => {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td style="padding: 10px;">${account.address}</td>
+            <td style="padding: 10px;">${account.funded ? 'Funded' : 'Not Funded'}</td>
+            <td style="padding: 10px;">
+                <button style="padding: 5px 10px; border-radius: 5px; font-size: 16px;" onclick="flipOwnership_('${account.address}')">Flip Ownership</button>
+            </td>
+          `;
+          node2TableBody.appendChild(row);
+        });
+      })
+      .catch(error => console.error(error));
+    }load()
+  </script>
+  

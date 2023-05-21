@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    
+    <meta charset="UTF-8">
+    <title>Send Transaction</title>
+    
+    <style>
+        .spinner {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid #f3f3f3;
+  border-top-color: #3498db;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+      }
+      h1 {
+        margin-top: 20px;
+        margin-bottom: 20px;
+        text-align: center;
+      }
+      form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      label {
+        margin-top: 10px;
+      }
+      input[type="text"],
+      input[type="password"] {
+        margin-top: 5px;
+        padding: 5px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        width: 300px;
+        font-size: 16px;
+      }
+      input[type="submit"] {
+        margin-top: 20px;
+        padding: 10px 20px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+      }
+      input[type="submit"]:hover {
+        background-color: #45a049;
+      }
+      #hash {
+        margin-top: 20px;
+        text-align: center;
+        font-size: 16px;
+      }
+      #result {
+        margin-top: 20px;
+        text-align: center;
+        font-size: 16px;
+      }
+      button {
+        margin-top: 20px;
+        padding: 10px 20px;
+        background-color: #008CBA;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+      }
+      button:hover {
+        background-color: #006B8F;
+      }
+      table {
+        margin-top: 20px;
+        border-collapse: collapse;
+        width: 100%;
+      }
+      th, td {
+        text-align: left;
+        padding: 8px;
+        border-bottom: 1px solid #ddd;
+      }
+      th {
+        background-color: #4CAF50;
+        color: white;
+      }
+    </style>
+  </head>
+  <body>
+    <script>
+        function handleFormSubmit(event)
+        {
+            event.preventDefault(); // Prevent the default form submission behavior
+            const f = document.getElementById("password").value
+            const sender  = document.getElementById("sender-address").value
+            const receiver = document.getElementById("receiver-address").value
+            const password = document.getElementById("password").value 
+            const node_number = document.getElementById("node-number").value
+            const money = document.getElementById("money").value
+            send({sender:sender,receiver:receiver,password:password,node:node_number,money:money})
+        }
+
+    </script>
+
+      <h1 style="font-size: 36px;">Private Blockchain Nodes Set Up - SideChain</h1>
+    
+    
+    <a href="createAccount.html">
+      <h1 style="font-size: 24px;">Create Account</h1>
+    </a>
+    <a href="ownership.html">
+      <h1 style="font-size: 24px;">Manage Ownership</h1>
+    </a>
+    
+    <form id="transaction-form" onsubmit="handleFormSubmit(event)">
+      <label for="sender-address">Sender's Address:</label>
+      <input type="text" id="sender-address" name="sender-address" required>
+      <label for="receiver-address">Receiver's Address:</label>
+      <input type="text" id="receiver-address" name="receiver-address" required>
+      <label for="password">Password:</label>
+      <input type="password" id="password" name="password" required>
+      <label for="node-number">Node Number:</label>
+      <input type="text" id="node-number" name="node-number" required>
+      <label for="money">Ethers to be sent:</label>
+      <input type="text" id="money" name="money" required>
+      <input type="submit" value="Send Transaction">
+    </form>
+    <div id="hash" name="Transaction-Hash"></div>
+    <div id="result"></div>
+       <script>
+        get()
+      async function get() {
+    const res = await fetch('http://127.0.0.1:5000/api_sidechain');
+    const res_ = await res.json();
+    const resp = res_
+    console.log(resp)
+        // console.log("lmao see here ",accounts);
+        const accounts=resp 
+   //      document.getElementById('result').innerHTML = `Accounts: ${resp}`;
+   let table = '<table>';
+table += '<thead><tr><th>Node</th><th>Account</th><th>Balance (in Ethers)</th></tr></thead>';
+table += '<tbody>';
+accounts.forEach(account => {
+  table += `<tr><td>${account.node}</td><td>${account.account}</td><td>${account.balance}</td></tr>`;
+});
+table += '</tbody></table>';
+
+document.getElementById('result').innerHTML = table;
+
+        return resp;
+      }
+      async function send(obj)
+      {  
+        const resultEl = document.getElementById('result');
+
+        // Create a spinner element
+        const spinnerEl = document.createElement('div');
+        spinnerEl.classList.add('spinner');
+
+        // Add spinner to the result element
+        resultEl.appendChild(spinnerEl);
+
+        // Set loading message
+        resultEl.innerHTML = "Transaction Processing";
+
+
+        //document.getElementById('result').innerHTML = "Transaction Processing"
+        
+        const res = await fetch('http://127.0.0.1:5000/transfer_internal_sidechain', {
+        method: 'POST',
+        body : JSON.stringify(obj),
+        headers: { 'Content-Type': 'application/json' },
+        });
+        const resp= await res.json()
+        console.log("sent")
+        console.log(JSON.stringify(resp))
+        if(resp.message=="error")
+            document.getElementById('result').innerHTML = "Error Occured in Transaction"
+        else 
+            document.getElementById('result').innerHTML = "Transaction sent and Transaction Hash : " + resp.message
+      }
+    </script>
+</script>
